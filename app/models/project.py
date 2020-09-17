@@ -11,8 +11,8 @@ class Project(db.Model):
     links = db.Column(db.PickleType, default={})
 
     def __repr__(self):
-        return f'(id: {self.id}, name: {self.name}, techs: {self.stack})'
+        return f'Project #{self.id}: {self.name} | {self.stack})'
 
     @property
     def as_dict(self):
-        return { column.name: getattr(self, column.name) for column in self.__table__.columns }
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
