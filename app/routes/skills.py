@@ -1,12 +1,13 @@
 from flask import make_response
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required
-from app.controllers.skills import (add_skill,
-                                    fetch_skills,
-                                    fetch_skill,
-                                    update_skill_set,
-                                    delete_skill_set
-                                    )
+from app.controllers.skills import (
+    add_skill,
+    fetch_skills,
+    fetch_skill,
+    update_skill_set,
+    delete_skill_set
+)
 
 
 class Skills(Resource):
