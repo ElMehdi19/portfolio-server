@@ -46,13 +46,13 @@ def get_project(id: int):
 def update_project(id: int, payload: Dict[str, Any]):
     project = Project.query.get(id)
     for key, val in payload.items():
-        if getattr(project, key) != val:
-            try:
-                setattr(project, key, val)
-            except IntegrityError:
-                return False
+        if val and val != getattr(project, key):
+            setattr(project, key, val)
 
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        return False
     return True
 
 

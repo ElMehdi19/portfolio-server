@@ -1,6 +1,6 @@
 from app import api
 from app.routes.auth import Login
-from app.routes.blogs import Blogs
+from app.routes.blogs import Blogs, Blog
 from app.routes.projects import Projects, Project
 from app.routes.skills import Skills, Skill
 
@@ -8,6 +8,7 @@ from app.routes.skills import Skills, Skill
 api.add_resource(Login, '/api/auth/login', endpoint='login')
 
 # blogs endpoints
+api.add_resource(Blog, '/api/blog/<int:id>', endpoint='blog')
 api.add_resource(Blogs, '/api/blogs', endpoint='blogs')
 
 # projects endpoints
