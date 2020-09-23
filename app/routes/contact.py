@@ -1,22 +1,22 @@
-from flask import make_response
-from flask_restful import Resource, reqparse
-from app.controllers.contact import add_message
-from app import q
+from flask import make_response, request
+from app import app, q
+from app.controllers.contact import check_email, send_email, add_message
 
 
-class Contact(Resource):
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument(
-            'email', type=str, required=True, location='json')
-        self.reqparse.add_argument(
-            'message', type=str, required=True, location='json')
+@app.route('/api/contact', methods=['POST'])
+def contact():
+    if not all(['email' in request.json, 'message' in request.json]):
+        return make_response({'success': False, 'message': 'missing required fields'}, 401)
 
-    def post(self):
-        args = self.reqparse.parse_args()
-        new_message = q.enqueue(add_message, args)  # add_message(args)
+    payload = {'email': request.json['email'],
+               'message': request.json['message'],
+               'ip_addr': request.remote_addr}
+    q.enqueue(add_message, payload)
 
-        print(q.all())
-        print(len(q))
+    if check_email(payload['email']):
+        mail_payload = {
+            'email': payload.get('email'),
+            'message': payload.get('message')}
+        q.enqueue(send_email, **mail_payload)
 
-        return make_response({'success': True}, 200)
+    return make_response({'success': True}, 200)
