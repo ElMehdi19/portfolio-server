@@ -8,6 +8,9 @@ def contact():
     if not all(['email' in request.json, 'message' in request.json]):
         return make_response({'success': False, 'message': 'missing required fields'}, 401)
 
+    if not all([request.json['email'], request.json['message']]):
+        return make_response({'success': False, 'message': 'missing required fields'}, 401)
+
     payload = {'email': request.json['email'],
                'message': request.json['message'],
                'ip_addr': request.remote_addr}
