@@ -1,6 +1,7 @@
 import os
 from flask import request
 
+
 def authenticate(req_key: str) -> bool:
     api_key = os.environ.get('API_KEY')
 
@@ -9,9 +10,16 @@ def authenticate(req_key: str) -> bool:
 
 def identity() -> dict:
     user_ip = request.remote_addr
-    user_agent = request.headers.get('User-Agent')
 
-    return { 
-        'user_ip' : user_ip,
-        'user_agent': user_agent
-     }
+    return {
+        'user_ip': user_ip,
+        'admin': True
+    }
+
+
+def is_admin(identity) -> bool:
+    if not identity:
+        return False
+
+    admin = identity.get('admin', False)
+    return admin

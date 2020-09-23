@@ -1,25 +1,37 @@
 from flask import make_response, request
+from flask_restful import Resource, reqparse
+from flask_jwt_extended import jwt_required, create_access_token
 from app import app, q
 from app.controllers.contact import check_email, send_email, add_message
 
 
-@app.route('/api/contact', methods=['POST'])
-def contact():
-    if not all(['email' in request.json, 'message' in request.json]):
-        return make_response({'success': False, 'message': 'missing required fields'}, 401)
+class Contact(Resource):
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument(
+            'email', type=str, required=True, location='json')
+        self.reqparse.add_argument(
+            'message', type=str, required=True, location='json')
 
-    if not all([request.json['email'], request.json['message']]):
-        return make_response({'success': False, 'message': 'missing required fields'}, 401)
+    def get(self):
+        token = create_access_token({'user': request.remote_addr})
+        return make_response({'token': token})
 
-    payload = {'email': request.json['email'],
-               'message': request.json['message'],
-               'ip_addr': request.remote_addr}
-    q.enqueue(add_message, payload)
+    @jwt_required
+    def post(self):
+        args = self.reqparse.parse_args()
+        payload = {
+            'email': args.get('email'),
+            'message': args.get('message'),
+            'ip_addr': request.remote_addr
+        }
+        q.enqueue(add_message, payload)
 
-    if check_email(payload['email']):
-        mail_payload = {
-            'email': payload.get('email'),
-            'message': payload.get('message')}
-        q.enqueue(send_email, **mail_payload)
+        if check_email(payload['email']):
+            mail_payload = {
+                'email': payload.get('email'),
+                'message': payload.get('message')
+            }
+            q.enqueue(send_email, **mail_payload)
 
-    return make_response({'success': True}, 200)
+        return make_response({'success': True}, 200)

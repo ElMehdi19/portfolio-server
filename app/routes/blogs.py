@@ -1,6 +1,7 @@
 from flask import make_response
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource, reqparse
+from app.controllers.auth import is_admin
 from app.controllers.blogs import (
     get_blogs,
     add_blog,
@@ -27,6 +28,10 @@ class Blogs(Resource):
 
     @jwt_required
     def post(self):
+        identity = get_jwt_identity()
+        if not is_admin(identity):
+            return make_response({'success': False, 'message': 'unauthorized'}, 401)
+
         args = self.reqparse.parse_args()
         new_blog = add_blog(args)
 
@@ -37,6 +42,10 @@ class Blogs(Resource):
 
     @jwt_required
     def delete(self):
+        identity = get_jwt_identity()
+        if not is_admin(identity):
+            return make_response({'success': False, 'message': 'unauthorized'}, 401)
+
         if not delete_blogs():
             return make_response({'success': False, 'message': 'Couldn`t delete blog'}, 500)
 
@@ -57,8 +66,14 @@ class Blog(Resource):
             return make_response({'success': False, 'message': 'blog not found'}, 404)
         return make_response({'success': True, 'blog': blog}, 200)
 
+    @jwt_required
     def put(self, id):
+        identity = get_jwt_identity()
+        if not is_admin(identity):
+            return make_response({'success': False, 'message': 'unauthorized'}, 401)
+
         blog = get_blog(id)
+
         if not blog:
             return make_response({'success': False, 'message': 'blog not found'}, 404)
 
@@ -70,8 +85,14 @@ class Blog(Resource):
 
         return make_response({'success': True, 'blog': updated_blog}, 200)
 
+    @jwt_required
     def delete(self, id):
+        identity = get_jwt_identity()
+        if not is_admin(identity):
+            return make_response({'success': False, 'message': 'unauthorized'}, 401)
+
         blog = get_blog(id)
+
         if not blog:
             return make_response({'success': False, 'message': 'blog not found'}, 404)
 
