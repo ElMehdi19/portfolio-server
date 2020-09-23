@@ -1,6 +1,5 @@
 venv
 __pycache__
-*.db
 .vscode
 .flaskenv
 config2.py
