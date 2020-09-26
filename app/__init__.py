@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
+from flask_cors import CORS
 from rq import Queue
 
 from app.config import Config
@@ -16,6 +17,7 @@ db = SQLAlchemy(app)
 api = Api(app)
 jwt = JWTManager(app)
 mail = Mail(app)
+cors = CORS(app, resources={r'/api/*': {'origins': '*'}})
 
 q = Queue(connection=conn)
 
