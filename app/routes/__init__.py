@@ -2,7 +2,7 @@ from flask import redirect
 from app import app, api
 from app.routes.auth import Login
 from app.routes.blogs import Blogs, Blog
-from app.routes.contact import Contact
+from app.routes.contact import Contact, Clients
 from app.routes.projects import Projects, Project
 from app.routes.skills import Skills, Skill
 
@@ -16,6 +16,7 @@ api.add_resource(Blogs, '/api/blogs', endpoint='blogs')
 
 # contact endpoints
 api.add_resource(Contact, '/api/contact', endpoint='contact')
+api.add_resource(Clients, '/api/clients', endpoint='clients')
 
 # projects endpoints
 api.add_resource(Project, '/api/project/<int:id>', endpoint='project')

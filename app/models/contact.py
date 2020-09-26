@@ -10,3 +10,7 @@ class Contact(db.Model):
 
     def __repr__(self):
         return f'#{self.id}: {self.email} | {self.country}'
+
+    @property
+    def as_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}

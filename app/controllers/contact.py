@@ -51,3 +51,8 @@ def send_email(email: str, message: str):
         msg.sender = 'me@iammehdi.io'
         msg.recipients = ['elmehdirami5@gmail.com']
         mail.send(msg)
+
+
+def fetch_clients():
+    clients = Contact.query.all()
+    return [client.as_dict for client in clients]

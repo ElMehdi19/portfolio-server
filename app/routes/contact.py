@@ -1,8 +1,19 @@
 from flask import make_response, request
 from flask_restful import Resource, reqparse
-from flask_jwt_extended import jwt_required, create_access_token
+from flask_jwt_extended import (
+    jwt_required,
+    create_access_token,
+    get_jwt_identity
+)
+
 from app import app, q
-from app.controllers.contact import check_email, send_email, add_message
+from app.controllers.auth import is_admin
+from app.controllers.contact import (
+    check_email,
+    send_email,
+    add_message,
+    fetch_clients
+)
 
 
 class Contact(Resource):
@@ -35,3 +46,14 @@ class Contact(Resource):
             q.enqueue(send_email, **mail_payload)
 
         return make_response({'success': True}, 200)
+
+
+class Clients(Resource):
+    @jwt_required
+    def get(self):
+        identity = get_jwt_identity()
+        if not is_admin(identity):
+            return make_response({'success': False}, 401)
+
+        clients = fetch_clients()
+        return make_response({'success': True, 'clients': clients}, 200)
