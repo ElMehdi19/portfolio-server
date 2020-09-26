@@ -5,10 +5,9 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from rq import Queue
-from redis import Redis, from_url
 
 from app.config import Config
-
+from app.worker import conn
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -18,11 +17,7 @@ api = Api(app)
 jwt = JWTManager(app)
 mail = Mail(app)
 
-if os.environ.get('REDISTOGO_URL'):
-    r = from_url(os.environ.get('REDISTOGO_URL'))
-else:
-    r = Redis()
-q = Queue(connection=r)
+q = Queue(connection=conn)
 
 
 from app import routes
