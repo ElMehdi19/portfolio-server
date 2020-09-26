@@ -6,7 +6,7 @@ from flask_mail import Mail
 from rq import Queue
 from redis import Redis
 
-from app.config import Config
+from app.config2 import Config
 
 
 app = Flask(__name__)

@@ -1,4 +1,5 @@
-from app import api
+from flask import redirect
+from app import app, api
 from app.routes.auth import Login
 from app.routes.blogs import Blogs, Blog
 from app.routes.contact import Contact
@@ -23,3 +24,10 @@ api.add_resource(Projects, '/api/projects', endpoint='projects')
 # skills endpoints
 api.add_resource(Skill, '/api/skill/<int:id>', endpoint='skill')
 api.add_resource(Skills, '/api/skills', endpoint='skills')
+
+# 404 handling
+
+
+@app.errorhandler(404)
+def forward(e):
+    return redirect('https://www.netlify.com/')

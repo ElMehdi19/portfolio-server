@@ -22,7 +22,7 @@ def add_skill(title: str, stack: List[str]) -> Union[bool, dict]:
 def fetch_skills() -> List[Dict[str, Any]]:
 
     try:
-        skills: List[Skill] = Skill.query.all()
+        skills: List[Skill] = Skill.query.order_by(Skill.id).all()
     except Exception:
         return []
 
