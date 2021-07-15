@@ -1,4 +1,6 @@
+from re import I
 from app import db
+from datetime import datetime
 
 
 class Project(db.Model):
@@ -9,6 +11,7 @@ class Project(db.Model):
     stack = db.Column(db.PickleType, nullable=False)
     links = db.Column(db.PickleType, default={})
     thumbnail = db.Column(db.Text)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return f'Project #{self.id}: {self.name} | {self.stack})'
