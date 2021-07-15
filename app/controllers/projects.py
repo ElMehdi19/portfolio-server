@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 
 
 def load_projects() -> List[Dict]:
-    projects_rows = Project.query.all()
+    projects_rows = Project.query.order_by(Project.date.desc()).all()
     projects_as_dict = [row.as_dict for row in projects_rows]
 
     return projects_as_dict
